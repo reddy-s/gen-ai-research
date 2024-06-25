@@ -1,0 +1,6 @@
+jupyter==1.0.0
+setuptools==68.2.2
+wheel==0.41.2
+build==1.0.3
+virtualenv==20.25.0
+twine==5.0.0
