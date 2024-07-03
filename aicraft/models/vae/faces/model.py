@@ -72,10 +72,15 @@ class FaceVAE(nn.Module):
         This function does not take any parameters and returns an integer representing the total size in bytes.
         """
         _param_size = 0
-        for p in self.model.parameters():
+        for p in self.encoder.parameters():
             _param_size += p.nelement() * p.element_size()
+
+        for p in self.decoder.parameters():
+            _param_size += p.nelement() * p.element_size()
+
         buffer_size = sum(
-            [buf.nelement() * buf.element_size() for buf in self.model.buffers()]
+            [buf.nelement() * buf.element_size() for buf in self.encoder.buffers()],
+            [buf.nelement() * buf.element_size() for buf in self.decoder.buffers()]
         )
         return _param_size + buffer_size
 
@@ -89,7 +94,9 @@ class FaceVAE(nn.Module):
         Returns:
             int: The total number of floating-point operations.
         """
-        return count_ops(self.model, torch.randn(1, 3, 224, 224).to(dtype=dtype))
+        encoder_flops = count_ops(self.encoder, torch.randn(1, 3, 224, 224).to(dtype=dtype))
+        decoder_flops = count_ops(self.decoder, torch.randn(1, 3, 224, 224).to(dtype=dtype))
+        return encoder_flops + decoder_flops
 
     def generate_embedding(
         self, x: torch.utils.data.DataLoader, device: torch.device = None

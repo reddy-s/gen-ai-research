@@ -23,7 +23,7 @@ def train(
 ):
     hyperparameters = {
         "lr": 0.0005,
-        "epochs": 40,
+        "epochs": 10,
         "batch_size": tl.batch_size,
         "optimizer": "Adam",
         "scheduler": "ExponentialLR",
@@ -44,7 +44,7 @@ def train(
     )
 
     logger.info("ℹ️ Saving model...")
-    model.save(path="model-artefacts/face-vae-512-e40.safetensors")
+    model.save(path="model-artefacts/face-vae-512-e40-tl.safetensors")
     logger.info("ℹ️ Successfully saved model")
 
 
@@ -63,6 +63,7 @@ if __name__ == "__main__":
 
     logger.info("ℹ️ Initialising model...")
     faceVAE = FaceVAE(embedding_size=512)
+    faceVAE.load("model-artefacts/face-vae-512-e40.safetensors")
 
     logger.info("ℹ️ Initialising data loaders...")
     data_loader = CartoonFacesLoader(
